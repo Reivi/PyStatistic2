@@ -1,15 +1,13 @@
-import array
 import sys
 from math import log
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (
     QMainWindow, QWidget, QGridLayout,
-    QHBoxLayout, QVBoxLayout, QApplication,
+    QHBoxLayout, QApplication,
     QTabWidget, QPushButton, QGroupBox, QLabel, QTableWidget, QSpinBox, QTableWidgetItem
 )
-from PyQt5.uic.properties import QtGui
-
+# pyuic5 loadUi.ui -o loadUi.py
 
 class Welcome(QGroupBox):  # - QWidget
     def __init__(self, parent=None):
@@ -27,19 +25,8 @@ class Welcome(QGroupBox):  # - QWidget
         self.tableRange.setColumnCount(2)
 
         self.tableRange.setHorizontalHeaderLabels(["Интервал", "Количество"])
-        self.tableRange.move(500, 50)
-        self.tableRange.resize(300, 850)
-
-        self.les()
-
-    def date_set(self, kol_interval, interval):
-        self.tableRange.setRowCount(kol_interval)
-
-        for i in range(kol_interval):
-            self.tableRange.setItem(i, 0, QTableWidgetItem(str("{}-{}".format("%.3f" %interval[i][0],"%.3f" % interval[i][1]))))
-            self.tableRange.setItem(i, 1, QTableWidgetItem(str(interval[i][2])))
-
-    def les(self):
+        self.tableRange.move(300, 50)
+        self.tableRange.resize(245, 850)
 
         # Создаём spinbox для изменения числа строк таблицы
         self.spin = QSpinBox(self)
@@ -58,13 +45,18 @@ class Welcome(QGroupBox):  # - QWidget
 
         # Делаем кнопку, по нажатию которой мы должны передаём данные дальше в обработку
         self.btn = QPushButton("Обработать данные", self)
-        self.btn.move(150, 20)
+        self.btn.move(120, 20)
         self.btn.resize(30, 30)
         self.btn.clicked.connect(self.get_data)
         self.btn.adjustSize()
-        self.widgit_box = QVBoxLayout(self)
 
-        self.widgit_box.addStretch(stretch=1)
+    def date_set(self, kol_interval, interval):
+        self.tableRange.setRowCount(kol_interval)
+
+        for i in range(kol_interval):
+            self.tableRange.setItem(i, 0, QTableWidgetItem(
+                str("{}-{}".format("%.2f" % interval[i][0], "%.2f" % interval[i][1]))))
+            self.tableRange.setItem(i, 1, QTableWidgetItem(str(interval[i][2])))
 
     def change(self):
         self.table.setRowCount(int(self.spin.text()))
@@ -73,17 +65,22 @@ class Welcome(QGroupBox):  # - QWidget
 
         average = 0
         summ = 0
-        maxX = -9999
-        minX = 9999
+        maxX = -999999
+        minX = 999999
 
         for i in range(self.table.rowCount()):
             if self.table.item(i, 0) is not None:
-                average += 1
-                summ = float(self.table.item(i, 0).text()) + summ
-                if maxX < float(self.table.item(i, 0).text()):
-                    maxX = float(self.table.item(i, 0).text())
-                if minX > float(self.table.item(i, 0).text()):
-                    minX = float(self.table.item(i, 0).text())
+                print("Число ", self.table.item(i, 0).text())
+
+                try:
+                    average += 1
+                    summ = float(self.table.item(i, 0).text()) + summ
+                    if maxX < float(self.table.item(i, 0).text()):
+                        maxX = float(self.table.item(i, 0).text())
+                    if minX > float(self.table.item(i, 0).text()):
+                        minX = float(self.table.item(i, 0).text())
+                except:
+                    pass
 
         if average != 0:
 
@@ -104,8 +101,11 @@ class Welcome(QGroupBox):  # - QWidget
 
                 for i in range(self.table.rowCount()):
                     if self.table.item(i, 0) is not None:
-                        if interval[b][0] <= float(self.table.item(i, 0).text()) <= interval[b][1]:
-                            numbers_in_interval += 1
+                        try:
+                            if interval[b][0] <= float(self.table.item(i, 0).text()) <= interval[b][1]:
+                                numbers_in_interval += 1
+                        except:
+                            pass
                 interval[b][2] = numbers_in_interval
                 numbers_in_interval = 0
 
