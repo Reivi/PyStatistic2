@@ -27,18 +27,22 @@ class ExampleApp(QtWidgets.QMainWindow, loadUi.Ui_MainWindow):
         self.GraphWidget.setLabel(axis='bottom', text='Интервал')
         self.GraphWidget.setBackground('w')
 
-
-    def plot(self, i, interval):
-        self.GraphWidget.plot(i, interval)
+    def plot(self, axisY, interval):
+        self.GraphWidget.plot(y=axisY, x=interval)
 
     def date_set(self, kol_interval, interval):
         self.Table_result.setRowCount(kol_interval)
+        spam = [1 * 3 for i in range(kol_interval)]
+        tatl = [1 * 3 for i in range(kol_interval)]
         for i in range(kol_interval):
+            spam[i] = interval[i][2]
+            tatl[i] = interval[i][0]
             print("x=", i, "y=", int(interval[i][1]))
             self.Table_result.setItem(i, 0, QTableWidgetItem(
                 str("{}-{}".format("%.2f" % interval[i][0], "%.2f" % interval[i][1]))))
             self.Table_result.setItem(i, 1, QTableWidgetItem(str(interval[i][2])))
-            self.GraphWidget.plot([int(i)], [int(interval[i][1])])
+        tatl[kol_interval-1] = interval[kol_interval-1][1]
+        self.GraphWidget.plot(tatl, spam)
 
     def change(self):
         self.Table_input.setRowCount(int(self.Spin_input_table.text()))
