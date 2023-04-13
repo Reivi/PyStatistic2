@@ -27,6 +27,7 @@ class ExampleApp(QtWidgets.QMainWindow, loadUi.Ui_MainWindow):
         self.GraphWidget.setLabel(axis='bottom', text='Интервал')
         self.GraphWidget.setBackground('w')
 
+        self.matplotlib.pyplot.hist()
     def plot(self, axisY, interval):
         self.GraphWidget.plot(y=axisY, x=interval)
 
@@ -70,7 +71,7 @@ class ExampleApp(QtWidgets.QMainWindow, loadUi.Ui_MainWindow):
 
         if average != 0:
 
-            kol_interval = int(1 + abs(log(average, 2)))
+            kol_interval =  7 #int(1 + abs(log(average, 2)))
             print("Количество интервалов = ", kol_interval)
             shir_interval = (maxX - minX) / kol_interval
             print("Ширина интервала = ", shir_interval)
