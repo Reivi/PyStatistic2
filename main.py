@@ -19,8 +19,6 @@ class ExampleApp(QtWidgets.QMainWindow, loadUi.Ui_MainWindow):
 
         self.Spin_input_table.valueChanged.connect(self.change)
 
-        self.Table_result.setColumnCount(2)
-        self.Table_result.setHorizontalHeaderLabels(["Интервал", "Количество"])
         self.Table_result.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Fixed)
         self.Table_result.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Fixed)
 
@@ -43,18 +41,23 @@ class ExampleApp(QtWidgets.QMainWindow, loadUi.Ui_MainWindow):
 
         self.action_Excel.triggered.connect(self.Export_to_Exel)
 
-    def plot(self, axisX, axisY):
+    def plot(self, axis_x, axis_y):
         self.window.clear()
-        xdict = dict(enumerate(axisX))
-        stringaxis = pg.AxisItem(orientation='bottom')
-        stringaxis.setTicks([xdict.items()])
-        ticks = [list(zip(range(7), (axisX)))]
+        xdict = dict(enumerate(axis_x))
+        string_axis = pg.AxisItem(orientation='bottom')
+        string_axis.setTicks([xdict.items()])
+        ticks = [list(zip(range(7), axis_y))]
         xax = self.window.getAxis('bottom')
         xax.setTicks(ticks)
-        self.window.addItem(pg.BarGraphItem(x=list(xdict.keys()), height=axisY, width=0.6, brush='g'))
+        self.window.addItem(pg.BarGraphItem(x=list(xdict.keys()), height=axis_y, width=0.6, brush='g'))
 
     def Export_to_Exel(self):
-        self.get_data()
+
+        fire = self.get_data()
+
+        Data = fire[0]
+        interval = fire[1]
+
         my_wb = openpyxl.Workbook()
         my_sheet = my_wb.active
         c1 = my_sheet.cell(row=1, column=1)
@@ -90,7 +93,35 @@ class ExampleApp(QtWidgets.QMainWindow, loadUi.Ui_MainWindow):
             c1.value = interval[i][2]
             c1.alignment = Alignment(horizontal='center')
 
+        c1 = my_sheet.cell(row=1, column=7)
+        c1.value = "Параметр"
+        c1.font = bold_font
+        c1 = my_sheet.cell(row=1, column=6)
+        c1.value = "Название"
+        c1.font = bold_font
+        c1 = my_sheet.cell(row=2, column=6)
+        c1.value = "Дисперсия"
+        c1.font = bold_font
+        c1 = my_sheet.cell(row=3, column=6)
+        c1.value = "Сред. квад. окл."
+        c1.font = bold_font
+        c1 = my_sheet.cell(row=4, column=6)
+        c1.value = "Среднее знач."
+        c1.font = bold_font
+        c1 = my_sheet.cell(row=5, column=6)
+        c1.value = "Коэф. вариац."
+        c1.font = bold_font
+        c1 = my_sheet.cell(row=6, column=6)
+        c1.value = "Мин."
+        c1.font = bold_font
+        c1 = my_sheet.cell(row=7, column=6)
+        c1.value = "Макс."
+        c1.font = bold_font
 
+        for i in range(6):
+            c1 = my_sheet.cell(row=i + 2, column=7)
+            c1.value = fire[i + 2]
+            c1.alignment = Alignment(horizontal='center')
 
         chart1 = BarChart()
         # установим тип - `вертикальные столбцы`
@@ -120,7 +151,7 @@ class ExampleApp(QtWidgets.QMainWindow, loadUi.Ui_MainWindow):
     def date_statistic_set(self, variance, sred_kvad_otkl, sr_snaz, koev_variazii, maxX, minX):
         self.Table_statistic.setRowCount(10)
         self.Table_statistic.setColumnCount(2)
-        self.Table_statistic.setHorizontalHeaderLabels(["Название", "Значение"])
+        self.Table_statistic.setHorizontalHeaderLabels(["Параметр", "Значение"])
         self.Table_statistic.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.Table_statistic.setItem(0, 0, QTableWidgetItem("Дисперсия"))
         self.Table_statistic.setItem(1, 0, QTableWidgetItem("Сред. квад. окл."))
@@ -129,24 +160,24 @@ class ExampleApp(QtWidgets.QMainWindow, loadUi.Ui_MainWindow):
         self.Table_statistic.setItem(4, 0, QTableWidgetItem("Мин."))
         self.Table_statistic.setItem(5, 0, QTableWidgetItem("Макс."))
 
-        self.Table_statistic.setItem(0, 1, QTableWidgetItem(str(f"{variance:.6}")))
-        self.Table_statistic.setItem(1, 1, QTableWidgetItem(str(f"{sred_kvad_otkl:.6}")))
-        self.Table_statistic.setItem(2, 1, QTableWidgetItem(str(f"{sr_snaz:.6}")))
-        self.Table_statistic.setItem(3, 1, QTableWidgetItem(str(f"{koev_variazii:.6}")))
-        self.Table_statistic.setItem(4, 1, QTableWidgetItem(str(f"{minX:.6}")))
-        self.Table_statistic.setItem(5, 1, QTableWidgetItem(str(f"{maxX:.6}")))
+        self.Table_statistic.setItem(0, 1, QTableWidgetItem(str(f"{variance:.8}")))
+        self.Table_statistic.setItem(1, 1, QTableWidgetItem(str(f"{sred_kvad_otkl:.8}")))
+        self.Table_statistic.setItem(2, 1, QTableWidgetItem(str(f"{sr_snaz:.8}")))
+        self.Table_statistic.setItem(3, 1, QTableWidgetItem(str(f"{koev_variazii:.8}")))
+        self.Table_statistic.setItem(4, 1, QTableWidgetItem(str(f"{minX:.8}")))
+        self.Table_statistic.setItem(5, 1, QTableWidgetItem(str(f"{maxX:.8}")))
 
     def date_set(self, kol_interval, interval):
         self.Table_result.setRowCount(kol_interval)
-
+        self.Table_result.setColumnCount(2)
+        self.Table_result.setHorizontalHeaderLabels(["Интервал", "Количество"])
         spam = [1 * 3 for i in range(kol_interval)]
         tatl = [1 * 3 for i in range(kol_interval)]
         for i in range(kol_interval):
             spam[i] = interval[i][2]
             tatl[i] = QTableWidgetItem(
-                str("{}-{}".format("%.2f" % interval[i][0], "%.2f" % interval[i][1]))).text()
-            self.Table_result.setItem(i, 0, QTableWidgetItem(
-                str("{}-{}".format("%.2f" % interval[i][0], "%.2f" % interval[i][1]))))
+                str("{}-{}".format(f"{interval[i][0]:.3}", f"{interval[i][1]:.3}"))).text()
+            self.Table_result.setItem(i, 0, QTableWidgetItem(str(tatl[i])))
             self.Table_result.setItem(i, 1, QTableWidgetItem(str(interval[i][2])))
 
         self.plot(tatl, spam)
@@ -160,7 +191,6 @@ class ExampleApp(QtWidgets.QMainWindow, loadUi.Ui_MainWindow):
         summ = 0
         maxX = -sys.maxsize - 1
         minX = sys.maxsize
-        global Data
         Data = []
 
         for i in range(self.Table_input.rowCount()):
@@ -173,7 +203,6 @@ class ExampleApp(QtWidgets.QMainWindow, loadUi.Ui_MainWindow):
                         maxX = float(self.Table_input.item(i, 0).text())
                     if minX > float(self.Table_input.item(i, 0).text()):
                         minX = float(self.Table_input.item(i, 0).text())
-
                 except:
                     pass
 
@@ -184,13 +213,10 @@ class ExampleApp(QtWidgets.QMainWindow, loadUi.Ui_MainWindow):
             deviations = [(x - sr_snaz) ** 2 for x in Data]
 
             variance = sum(deviations) / len(Data)
-            print("Дисперсия = ", variance)
             sred_kvad_otkl = math.sqrt(variance)
-            print("Среднее квад. откл.",sred_kvad_otkl)
-            koev_variazii= sred_kvad_otkl/sr_snaz
+            koev_variazii = sred_kvad_otkl / sr_snaz
 
             shir_interval = (maxX - minX) / kol_interval
-            global interval
             interval = [[0] * 3 for i in range(kol_interval)]
             interval[0][0] = minX
             interval[0][1] = (interval[0][0] + shir_interval)
@@ -203,18 +229,15 @@ class ExampleApp(QtWidgets.QMainWindow, loadUi.Ui_MainWindow):
             for b in range(kol_interval):
                 for i in range(self.Table_input.rowCount()):
                     try:
-                        if interval[b][0] <= float(self.Table_input.item(i, 0).text()) <= interval[b][1]:
+                        if interval[b][0] <= float(self.Table_input.item(i, 0).text()) <= round(interval[b][1], 10):
                             numbers_in_interval += 1
                     except:
                         pass
                 interval[b][2] = numbers_in_interval
                 numbers_in_interval = 0
-            if interval[kol_interval - 1][2] == 0: interval[kol_interval - 1][2] += 1
-
             self.date_set(kol_interval, interval)
-            self.date_statistic_set(variance, sred_kvad_otkl, sr_snaz,koev_variazii, maxX, minX)
-        return variance, sred_kvad_otkl, sr_snaz,koev_variazii, maxX, minX
-
+            self.date_statistic_set(variance, sred_kvad_otkl, sr_snaz, koev_variazii, maxX, minX)
+        return Data, interval, variance, sred_kvad_otkl, sr_snaz, koev_variazii, minX, maxX
 
 
 app = QtWidgets.QApplication([])
