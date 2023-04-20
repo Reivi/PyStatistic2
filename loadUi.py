@@ -108,7 +108,10 @@ class Ui_MainWindow(object):
         self.action.setObjectName("action")
         self.action_Excel = QtWidgets.QAction(MainWindow)
         self.action_Excel.setObjectName("action_Excel")
+        self.import_Excel = QtWidgets.QAction(MainWindow)
+        self.import_Excel.setObjectName("import_Excel")
         self.menu.addAction(self.action_Excel)
+        self.menu.addAction(self.import_Excel)
         self.menubar.addAction(self.menu.menuAction())
 
         self.retranslateUi(MainWindow)
@@ -121,3 +124,4 @@ class Ui_MainWindow(object):
         self.menu.setTitle(_translate("MainWindow", "Опции"))
         self.action.setText(_translate("MainWindow", "Настройки"))
         self.action_Excel.setText(_translate("MainWindow", "Экспорт в Excel"))
+        self.import_Excel.setText(_translate("MainWindow", "Импорт из Excel"))

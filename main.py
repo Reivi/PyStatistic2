@@ -8,7 +8,6 @@ from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QTableWidgetItem, QHeaderView, QFileDialog
 from openpyxl.chart import Reference, BarChart
 from openpyxl.styles import Font, Alignment
-from pyqt5_plugins.examplebuttonplugin import QtGui
 
 import loadUi
 import sys
@@ -44,6 +43,7 @@ class ExampleApp(QtWidgets.QMainWindow, loadUi.Ui_MainWindow):
         self.window.setMouseEnabled(x=False, y=False)
 
         self.action_Excel.triggered.connect(self.Export_to_Exel)
+        self.import_Excel.triggered.connect(self.Import_to_Exel)
 
         self.Name_graf.setPlaceholderText('Название проекта')
 
@@ -62,11 +62,6 @@ class ExampleApp(QtWidgets.QMainWindow, loadUi.Ui_MainWindow):
 
     def Export_to_Exel(self):
 
-        fire = self.get_data()
-
-        Data = fire[0]
-        interval = fire[1]
-
         my_wb = openpyxl.Workbook()
         my_sheet = my_wb.active
         c1 = my_sheet.cell(row=1, column=1)
@@ -76,13 +71,12 @@ class ExampleApp(QtWidgets.QMainWindow, loadUi.Ui_MainWindow):
         c1.font = bold_font
         error_dialog = QtWidgets.QErrorMessage()
         try:
-            for i in range(len(Data)):
+            for i in range(self.Table_input.rowCount()):
                 c1 = my_sheet.cell(row=i + 2, column=1)
-                c1.value = Data[i]
+                c1.value = float(self.Table_input.item(i, 0).text())
                 c1.alignment = Alignment(horizontal='center')
         except:
-            error_dialog.showMessage('Данные не обработаны!')
-
+            pass
         c1 = my_sheet.cell(row=1, column=3)
         c1.value = "Интервал"
         c1.font = bold_font
@@ -93,13 +87,12 @@ class ExampleApp(QtWidgets.QMainWindow, loadUi.Ui_MainWindow):
         for i in range(7):
             c1 = my_sheet.cell(row=i + 2, column=3)
             try:
-                c1.value = QTableWidgetItem(
-                    str("{}-{}".format("%.2f" % interval[i][0], "%.2f" % interval[i][1]))).text()
+                c1.value =self.Table_result.item(i, 0).text()
             except:
                 error_dialog.showMessage('Данные не обработаны!')
             c1.alignment = Alignment(horizontal='center')
             c1 = my_sheet.cell(row=i + 2, column=4)
-            c1.value = interval[i][2]
+            c1.value = float(self.Table_result.item(i, 1).text())
             c1.alignment = Alignment(horizontal='center')
 
         c1 = my_sheet.cell(row=1, column=7)
@@ -129,7 +122,7 @@ class ExampleApp(QtWidgets.QMainWindow, loadUi.Ui_MainWindow):
 
         for i in range(6):
             c1 = my_sheet.cell(row=i + 2, column=7)
-            c1.value = fire[i + 2]
+            c1.value = self.Table_statistic.item(i, 1).text()
             c1.alignment = Alignment(horizontal='center')
 
         chart1 = BarChart()
@@ -159,17 +152,25 @@ class ExampleApp(QtWidgets.QMainWindow, loadUi.Ui_MainWindow):
         if self.Name_graf.text() != "":
             save_name = self.Name_graf.text() + ".xlsx"
         else:
-            for i in range(10):
+            for i in range(20):
                 if not os.path.exists("Data_Excel_" + str(i) + ".xlsx"):
                     save_name = "Data_Excel_" + str(i) + ".xlsx"
                     break
                 else:
                     continue
+                    break
 
         fileName, _ = QFileDialog.getSaveFileName(self, "Экспорт данных в Excel", save_name,
                                                   "Excel Files (*.xlsx);;All Files (*)")
         if fileName:
-            my_wb.save(save_name)
+            my_wb.save(fileName)
+
+    def Import_to_Exel(self):
+
+        fileName, _ = QFileDialog.getOpenFileName(self, "Импорт из Excel", "",
+                                                  "Excel Files (*.xlsx);;All Files (*)")
+        if fileName:
+            print(fileName)
 
     def date_statistic_set(self, variance, sred_kvad_otkl, sr_snaz, koev_variazii, maxX, minX):
         self.Table_statistic.setRowCount(10)
@@ -261,7 +262,7 @@ class ExampleApp(QtWidgets.QMainWindow, loadUi.Ui_MainWindow):
                 numbers_in_interval = 0
             self.date_set(kol_interval, interval)
             self.date_statistic_set(variance, sred_kvad_otkl, sr_snaz, koev_variazii, maxX, minX)
-        return Data, interval, variance, sred_kvad_otkl, sr_snaz, koev_variazii, minX, maxX
+
 
 
 app = QtWidgets.QApplication([])

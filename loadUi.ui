@@ -192,6 +192,7 @@
      <string>Опции</string>
     </property>
     <addaction name="action_Excel"/>
+    <addaction name="import_Excel"/>
    </widget>
    <addaction name="menu"/>
   </widget>
@@ -204,6 +205,11 @@
   <action name="action_Excel">
    <property name="text">
     <string>Экспорт в Excel</string>
+   </property>
+  </action>
+  <action name="import_Excel">
+   <property name="text">
+    <string>Импорт из Excel</string>
    </property>
   </action>
  </widget>
