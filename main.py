@@ -1,12 +1,14 @@
 import math
+import os
 
 import openpyxl
 import pyqtgraph as pg
 
 from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QTableWidgetItem, QHeaderView
+from PyQt5.QtWidgets import QTableWidgetItem, QHeaderView, QFileDialog
 from openpyxl.chart import Reference, BarChart
 from openpyxl.styles import Font, Alignment
+from pyqt5_plugins.examplebuttonplugin import QtGui
 
 import loadUi
 import sys
@@ -16,6 +18,8 @@ class ExampleApp(QtWidgets.QMainWindow, loadUi.Ui_MainWindow):
     def __init__(self):
         super(ExampleApp, self).__init__()
         self.setupUi(self)
+
+        self.setWindowTitle("PyStatistic")
 
         self.Spin_input_table.valueChanged.connect(self.change)
 
@@ -41,15 +45,20 @@ class ExampleApp(QtWidgets.QMainWindow, loadUi.Ui_MainWindow):
 
         self.action_Excel.triggered.connect(self.Export_to_Exel)
 
-    def plot(self, axis_x, axis_y):
+        self.Name_graf.setPlaceholderText('Название проекта')
+
+    def plot(self, axisX, axisY):
         self.window.clear()
-        xdict = dict(enumerate(axis_x))
-        string_axis = pg.AxisItem(orientation='bottom')
-        string_axis.setTicks([xdict.items()])
-        ticks = [list(zip(range(7), axis_y))]
+        self.window.setLabel('left', 'Количество')
+        self.window.setLabel('bottom', 'Интервалы')
+        xdict = dict(enumerate(axisX))
+        stringaxis = pg.AxisItem(orientation='bottom')
+        stringaxis.setTicks([xdict.items()])
+        ticks = [list(zip(range(7), (axisX)))]
         xax = self.window.getAxis('bottom')
         xax.setTicks(ticks)
-        self.window.addItem(pg.BarGraphItem(x=list(xdict.keys()), height=axis_y, width=0.6, brush='g'))
+        self.window.addItem(pg.BarGraphItem(x=list(xdict.keys()), height=axisY, width=0.6, brush='g'))
+        self.window.setTitle(self.Name_graf.text(), size="25pt", color="black")
 
     def Export_to_Exel(self):
 
@@ -129,12 +138,13 @@ class ExampleApp(QtWidgets.QMainWindow, loadUi.Ui_MainWindow):
         # установим стиль диаграммы (цветовая схема)
         chart1.style = 8
 
-        chart1.title = "Столбчатая диаграмма"
-
         chart1.y_axis.title = 'Количество'
         chart1.y_axis.delete = False
         chart1.x_axis.title = 'Интервалы'
         chart1.x_axis.delete = False
+        chart1.width = 15
+        chart1.height = 11
+        chart1.title = self.Name_graf.text()
         # выберем 2 столбца с данными для оси `y`
         data = Reference(my_sheet, min_col=4, max_col=4, min_row=1, max_row=8)
         # теперь выберем категорию для оси `x`
@@ -144,9 +154,22 @@ class ExampleApp(QtWidgets.QMainWindow, loadUi.Ui_MainWindow):
         # установим метки на объект диаграммы
         chart1.set_categories(categor)
         # добавим диаграмму на лист, в ячейку "A10"
-        my_sheet.add_chart(chart1, "D10")
+        my_sheet.add_chart(chart1, "J2")
 
-        my_wb.save("Data_Excel.xlsx")
+        if self.Name_graf.text() != "":
+            save_name = self.Name_graf.text() + ".xlsx"
+        else:
+            for i in range(10):
+                if not os.path.exists("Data_Excel_" + str(i) + ".xlsx"):
+                    save_name = "Data_Excel_" + str(i) + ".xlsx"
+                    break
+                else:
+                    continue
+
+        fileName, _ = QFileDialog.getSaveFileName(self, "Экспорт данных в Excel", save_name,
+                                                  "Excel Files (*.xlsx);;All Files (*)")
+        if fileName:
+            my_wb.save(save_name)
 
     def date_statistic_set(self, variance, sred_kvad_otkl, sr_snaz, koev_variazii, maxX, minX):
         self.Table_statistic.setRowCount(10)
@@ -203,6 +226,7 @@ class ExampleApp(QtWidgets.QMainWindow, loadUi.Ui_MainWindow):
                         maxX = float(self.Table_input.item(i, 0).text())
                     if minX > float(self.Table_input.item(i, 0).text()):
                         minX = float(self.Table_input.item(i, 0).text())
+
                 except:
                     pass
 
