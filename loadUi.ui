@@ -95,7 +95,7 @@
          <widget class="QTableWidget" name="Table_result">
           <property name="minimumSize">
            <size>
-            <width>260</width>
+            <width>375</width>
             <height>0</height>
            </size>
           </property>
@@ -165,7 +165,7 @@
         </property>
         <property name="sizeHint" stdset="0">
          <size>
-          <width>40</width>
+          <width>30</width>
           <height>20</height>
          </size>
         </property>
@@ -174,7 +174,7 @@
      </layout>
     </item>
     <item row="0" column="1">
-     <layout class="QHBoxLayout" name="Widget_Layout"/>
+     <layout class="QVBoxLayout" name="Widget_Layout"/>
     </item>
    </layout>
   </widget>
