@@ -111,7 +111,6 @@ class Ui_MainWindow(object):
         self.import_Excel = QtWidgets.QAction(MainWindow)
         self.import_Excel.setObjectName("import_Excel")
         self.menu.addAction(self.action_Excel)
-        self.menu.addAction(self.import_Excel)
         self.menubar.addAction(self.menu.menuAction())
 
         self.retranslateUi(MainWindow)

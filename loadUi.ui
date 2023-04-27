@@ -192,7 +192,6 @@
      <string>Опции</string>
     </property>
     <addaction name="action_Excel"/>
-    <addaction name="import_Excel"/>
    </widget>
    <addaction name="menu"/>
   </widget>
