@@ -230,12 +230,12 @@ class ExampleApp(QtWidgets.QMainWindow, loadUi.Ui_MainWindow):
         self.Table_statistic.setItem(4, 0, QTableWidgetItem("Минимальное"))
         self.Table_statistic.setItem(5, 0, QTableWidgetItem("Максимальное"))
 
-        self.Table_statistic.setItem(0, 1, QTableWidgetItem(str(f"{variance:.8}")))
-        self.Table_statistic.setItem(1, 1, QTableWidgetItem(str(f"{sred_kvad_otkl:.8}")))
-        self.Table_statistic.setItem(2, 1, QTableWidgetItem(str(f"{sr_snaz:.8}")))
-        self.Table_statistic.setItem(3, 1, QTableWidgetItem(str(f"{koev_variazii:.8}")))
-        self.Table_statistic.setItem(4, 1, QTableWidgetItem(str(f"{minX:.8}")))
-        self.Table_statistic.setItem(5, 1, QTableWidgetItem(str(f"{maxX:.8}")))
+        self.Table_statistic.setItem(0, 1, QTableWidgetItem(str(round(variance, 4))))
+        self.Table_statistic.setItem(1, 1, QTableWidgetItem(str(round(sred_kvad_otkl, 4))))
+        self.Table_statistic.setItem(2, 1, QTableWidgetItem(str(round(sr_snaz, 4))))
+        self.Table_statistic.setItem(3, 1, QTableWidgetItem(str(round(koev_variazii, 4))))
+        self.Table_statistic.setItem(4, 1, QTableWidgetItem(str(round(minX, 4))))
+        self.Table_statistic.setItem(5, 1, QTableWidgetItem(str(round(maxX, 4))))
 
     def date_set(self, kol_interval, interval, Pi):
 
@@ -251,7 +251,7 @@ class ExampleApp(QtWidgets.QMainWindow, loadUi.Ui_MainWindow):
                 str("{}-{}".format(f"{interval[i][0]:.5}", f"{interval[i][1]:.5}"))).text()
             self.Table_result.setItem(i, 0, QTableWidgetItem(str(tatl[i])))
             self.Table_result.setItem(i, 1, QTableWidgetItem(str(interval[i][2])))
-            self.Table_result.setItem(i, 2, QTableWidgetItem(str(f"{Pi[i]:.3}")))
+            self.Table_result.setItem(i, 2, QTableWidgetItem(str(round(Pi[i], 4))))
         self.plot(tatl, spam, Pi)
 
     def change(self):
