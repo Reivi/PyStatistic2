@@ -219,7 +219,7 @@ class ExampleApp(QtWidgets.QMainWindow, loadUi.Ui_MainWindow):
 
 
     def date_statistic_set(self, variance, sred_kvad_otkl, sr_snaz, koev_variazii, maxX, minX):
-        self.Table_statistic.setRowCount(10)
+        self.Table_statistic.setRowCount(6)
         self.Table_statistic.setColumnCount(2)
         self.Table_statistic.setHorizontalHeaderLabels(["Параметр", "Значение"])
         self.Table_statistic.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
