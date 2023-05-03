@@ -248,7 +248,7 @@ class ExampleApp(QtWidgets.QMainWindow, loadUi.Ui_MainWindow):
         for i in range(kol_interval):
             spam[i] = interval[i][2]
             tatl[i] = QTableWidgetItem(
-                str("{}-{}".format(round(interval[i][0], 2),round(interval[i][1], 2)))).text()
+                str("{}-{}".format(round(interval[i][0], 1),round(interval[i][1], 1)))).text()
             self.Table_result.setItem(i, 0, QTableWidgetItem(str(tatl[i])))
             self.Table_result.setItem(i, 1, QTableWidgetItem(str(interval[i][2])))
             self.Table_result.setItem(i, 2, QTableWidgetItem(str(round(Pi[i], 1))))
