@@ -2,83 +2,87 @@ import math
 import os
 
 import openpyxl
-import pyqtgraph as pg
-
-from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QTableWidgetItem, QHeaderView, QFileDialog
 from openpyxl.chart import Reference, BarChart
 from openpyxl.styles import Font, Alignment
 
-import loadUi
+
+import pyqtgraph as pg
+
+
+from PyQt5 import QtWidgets
+from PyQt5.QtWidgets import QTableWidgetItem, QHeaderView, QFileDialog
+
+
+import loadUi # Импорт файла loadUi.py
 import sys
 
 
-class ExampleApp(QtWidgets.QMainWindow, loadUi.Ui_MainWindow):
+class ExampleApp(QtWidgets.QMainWindow, loadUi.Ui_MainWindow): # Класс в котором реализуется функционал приложения и наследутся от класса графического интерфейса (Графический интерфейс представлени в файле loadUi.py)
     def __init__(self):
         super(ExampleApp, self).__init__()
         self.setupUi(self)
 
-        self.setWindowTitle("PyStatistic")
+        self.setWindowTitle("PyStatistic") # Название она приложения
 
-        self.Spin_input_table.valueChanged.connect(self.change)
+        self.Spin_input_table.valueChanged.connect(self.change) # Соединение spin с функцией для изменения кол-ва строк в таблице
 
-        self.Table_result.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Fixed)
-        self.Table_result.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Fixed)
+        self.Table_result.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Fixed) # Фиксированный размер ячеек в таюлице результатов
+        self.Table_result.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Fixed)# Фиксированный размер ячеек
 
-        self.Table_input.setColumnCount(1)
-        self.Table_input.setRowCount(int(self.Spin_input_table.text()))
-        self.Table_input.setHorizontalHeaderLabels(["Даннные"])
-        self.Table_input.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Fixed)
-        self.Table_input.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Fixed)
+        self.Table_input.setColumnCount(1) # кол-во столбцов в таблице ввода
+        self.Table_input.setRowCount(int(self.Spin_input_table.text())) # кол-во строк в зависимости от числа в spin
+        self.Table_input.setHorizontalHeaderLabels(["Даннные"]) # Название столбца
+        self.Table_input.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Fixed) # Фиксированный размер ячеек
+        self.Table_input.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Fixed) # Фиксированный размер ячеек
 
-        self.Table_statistic.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Fixed)
-        self.Table_statistic.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Fixed)
+        self.Table_statistic.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Fixed) # Фиксированный размер ячеек
+        self.Table_statistic.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Fixed) # Фиксированный размер ячеек
 
-        self.Obr_button.clicked.connect(self.get_data)
+        self.Obr_button.clicked.connect(self.get_data) # Соединение кнопки с функцией get_data
 
-        self.window = pg.plot()
-        self.Widget_Layout.addWidget(self.window)
-        self.window.setBackground('w')
-        self.window.showGrid(y=True)
-        self.window.setMouseEnabled(x=False, y=False)
+        self.window = pg.plot() # Создание графика 1
+        self.Widget_Layout.addWidget(self.window) # Добавление графика в окно приложения
+        self.window.setBackground('w')# Выбор цвета заднего фона для графика
+        self.window.showGrid(y=True) # Линии сетки для графика
+        self.window.setMouseEnabled(x=False, y=False) # Отключение, для графика, перемещения с помощь мыши
 
-        self.window_Pi = pg.plot()
-        self.Widget_Layout.addWidget(self.window_Pi)
-        self.window_Pi.setBackground('w')
-        self.window_Pi.showGrid(y=True)
-        self.window_Pi.setMouseEnabled(x=False, y=False)
+        self.window_Pi = pg.plot() # Создание графика 2
+        self.Widget_Layout.addWidget(self.window_Pi) # Добавление графика в окно приложения
+        self.window_Pi.setBackground('w')# Выбор цвета заднего фона для графика
+        self.window_Pi.showGrid(y=True)# Линии сетки для графика
+        self.window_Pi.setMouseEnabled(x=False, y=False)# Отключение, для графика, перемещения с помощь мыши
 
-        self.action_Excel.triggered.connect(self.Export_to_Exel)
+        self.action_Excel.triggered.connect(self.Export_to_Excel) # Соединение кнопки экспорта с функцией Export_to_Excel
 
 
-        self.Name_graf.setPlaceholderText('Название проекта')
+        self.Name_graf.setPlaceholderText('Название проекта') # Подсказка для окна ввода
 
-    def plot(self, axisX, axisY,Pi):
-        self.window.clear()
-        self.window.setLabel('left', 'Количество')
-        self.window.setLabel('bottom', 'Интервалы')
-        xdict = dict(enumerate(axisX))
-        stringaxis = pg.AxisItem(orientation='bottom')
-        stringaxis.setTicks([xdict.items()])
-        ticks = [list(zip(range(7), (axisX)))]
-        xax = self.window.getAxis('bottom')
-        xax.setTicks(ticks)
-        self.window.addItem(pg.BarGraphItem(x=list(xdict.keys()), height=axisY, width=0.6, brush='g'))
+    def plot(self, axisX, axisY,Pi): # Функция для заполнения графиков
+        self.window.clear() # очистка графика 1
+        self.window.setLabel('left', 'Количество') # левая подпись графика 1
+        self.window.setLabel('bottom', 'Интервалы')# нижняя подпись графика 1
+        xdict = dict(enumerate(axisX)) # создание словаря нумерации для нижних значений графика
+
+        ticks = [list(zip(range(7), (axisX)))] # создание списка для нижних значений графика
+        xax = self.window.getAxis('bottom') # Присовение списка к низу графика
+        xax.setTicks(ticks) # Вставка списка
+
+        self.window.addItem(pg.BarGraphItem(x=list(xdict.keys()), height=axisY, width=0.6, brush='g')) # Стиль графика 1
         self.window.setTitle(self.Name_graf.text(), size="25pt", color="black")
 
-        self.window_Pi.clear()
-        self.window_Pi.setLabel('left', 'Pi')
-        self.window_Pi.setLabel('bottom', 'Интервалы')
-        xax = self.window_Pi.getAxis('bottom')
-        xax.setTicks(ticks)
-        self.window_Pi.addItem(pg.BarGraphItem(x=list(xdict.keys()), height=Pi, width=0.6, brush='g'))
+        self.window_Pi.clear() # очистка графика 2
+        self.window_Pi.setLabel('left', 'Pi') # левая подпись графика 2
+        self.window_Pi.setLabel('bottom', 'Интервалы') # нижняя подпись графика 2
+        xax = self.window_Pi.getAxis('bottom') # Присовение списка к низу графика
+        xax.setTicks(ticks) # Вставка списка
+        self.window_Pi.addItem(pg.BarGraphItem(x=list(xdict.keys()), height=Pi, width=0.6, brush='g')) # Стиль графика 2
         self.window_Pi.setTitle(self.Name_graf.text(), size="25pt", color="black")
 
-    def Export_to_Exel(self):
-        self.get_data()
-        my_wb = openpyxl.Workbook()
+    def Export_to_Excel(self): # Функиця экспортирования в Excel
+        self.get_data() # Вызов функции получения данных с таблицы
+        my_wb = openpyxl.Workbook() # создание экземпляра Excel файла
         my_sheet = my_wb.active
-        c1 = my_sheet.cell(row=1, column=1)
+        c1 = my_sheet.cell(row=1, column=1) # Далее идет вставка данных из таблиц в Excel файл
         c1.value = "№ опыта"
         bold_font = Font(bold=True)
         c1.alignment = Alignment(horizontal='center')
@@ -200,7 +204,7 @@ class ExampleApp(QtWidgets.QMainWindow, loadUi.Ui_MainWindow):
         chart2.set_categories(categor)
         my_sheet.add_chart(chart2, "K24")
 
-        if self.Name_graf.text() != "":
+        if self.Name_graf.text() != "": # Сохранение файла в форамате xlsx
             save_name = self.Name_graf.text() + ".xlsx"
         else:
             for i in range(20):
@@ -218,104 +222,104 @@ class ExampleApp(QtWidgets.QMainWindow, loadUi.Ui_MainWindow):
 
 
 
-    def date_statistic_set(self, variance, sred_kvad_otkl, sr_snaz, koev_variazii, maxX, minX):
-        self.Table_statistic.setRowCount(6)
-        self.Table_statistic.setColumnCount(2)
-        self.Table_statistic.setHorizontalHeaderLabels(["Параметр", "Значение"])
-        self.Table_statistic.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
-        self.Table_statistic.setItem(0, 0, QTableWidgetItem("Дисперсия"))
+    def date_statistic_set(self, variance, sred_kvad_otkl, sr_snaz, koev_variazii, maxX, minX): # Фунеция вставки обработанных данных в таблицу со статистиков
+        self.Table_statistic.setRowCount(6) # установка 6 строк
+        self.Table_statistic.setColumnCount(2) # установка 2 столбцов
+        self.Table_statistic.setHorizontalHeaderLabels(["Параметр", "Значение"]) # Название столбцов
+        self.Table_statistic.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch) # Установка размера ячеек
+        self.Table_statistic.setItem(0, 0, QTableWidgetItem("Дисперсия")) #Встака в левую часть таблицы
         self.Table_statistic.setItem(1, 0, QTableWidgetItem("Среднее квад. откл."))
         self.Table_statistic.setItem(2, 0, QTableWidgetItem("Среднее значение"))
         self.Table_statistic.setItem(3, 0, QTableWidgetItem("Коэффициент вариации"))
         self.Table_statistic.setItem(4, 0, QTableWidgetItem("Минимальное"))
         self.Table_statistic.setItem(5, 0, QTableWidgetItem("Максимальное"))
 
-        self.Table_statistic.setItem(0, 1, QTableWidgetItem(str(round(variance, 4))))
+        self.Table_statistic.setItem(0, 1, QTableWidgetItem(str(round(variance, 4)))) # Вставка в правую часть таблицы
         self.Table_statistic.setItem(1, 1, QTableWidgetItem(str(round(sred_kvad_otkl, 4))))
         self.Table_statistic.setItem(2, 1, QTableWidgetItem(str(round(sr_snaz, 4))))
         self.Table_statistic.setItem(3, 1, QTableWidgetItem(str(round(koev_variazii, 4))))
         self.Table_statistic.setItem(4, 1, QTableWidgetItem(str(round(minX, 4))))
         self.Table_statistic.setItem(5, 1, QTableWidgetItem(str(round(maxX, 4))))
 
-    def date_set(self, kol_interval, interval, Pi):
+    def date_set(self, kol_interval, interval, Pi): # Вставка обработанных данных в таблицу с интервалами
 
-        self.Table_result.setRowCount(kol_interval)
-        self.Table_result.setColumnCount(3)
-        self.Table_result.setHorizontalHeaderLabels(["Интервал", "Количество", "Pi"])
+        self.Table_result.setRowCount(kol_interval) # Установка кол-ва строк
+        self.Table_result.setColumnCount(3) # установка кол-ва столбцов
+        self.Table_result.setHorizontalHeaderLabels(["Интервал", "Количество", "Pi"]) # название столбцов
 
-        spam = [1 * 3 for i in range(kol_interval)]
-        tatl = [1 * 3 for i in range(kol_interval)]
-        for i in range(kol_interval):
-            spam[i] = interval[i][2]
-            tatl[i] = QTableWidgetItem(
+        spam = [1 * 3 for i in range(kol_interval)] # создание списка для передачи в функцию plot
+        tatl = [1 * 3 for i in range(kol_interval)] # создание списка для передачи в функцию plot
+        for i in range(kol_interval): # Цикл для вставки данных в таблицу и заполнения списков для передачи в plot
+            spam[i] = interval[i][2] # Кол-во входящих в интервал чисел
+            tatl[i] = QTableWidgetItem( # Интервалы
                 str("{}-{}".format(round(interval[i][0], 1),round(interval[i][1], 1)))).text()
-            self.Table_result.setItem(i, 0, QTableWidgetItem(str(tatl[i])))
-            self.Table_result.setItem(i, 1, QTableWidgetItem(str(interval[i][2])))
-            self.Table_result.setItem(i, 2, QTableWidgetItem(str(round(Pi[i], 1))))
-        self.plot(tatl, spam, Pi)
+            self.Table_result.setItem(i, 0, QTableWidgetItem(str(tatl[i]))) # Вставка Интервалов
+            self.Table_result.setItem(i, 1, QTableWidgetItem(str(interval[i][2]))) # вставка кол-ва входящих в интервал чисел
+            self.Table_result.setItem(i, 2, QTableWidgetItem(str(round(Pi[i], 1)))) # Вствка p[i]
+        self.plot(tatl, spam, Pi) # Вызов функции plot
 
-    def change(self):
+    def change(self): # Функция для динамического изменения кол-ва строк с таблице ввода с помощью spin
         self.Table_input.setRowCount(int(self.Spin_input_table.text()))
 
-    def get_data(self):
+    def get_data(self): # Функция для получения данных с таблицы ввода с дальнейшей их обработкой
 
-        average = 0
-        summ = 0
-        maxX = -sys.maxsize - 1
-        minX = sys.maxsize
-        Data = []
+        average = 0 #Кол-во чисел
+        summ = 0 # Сумма чисел
+        maxX = -sys.maxsize - 1 # Максимум
+        minX = sys.maxsize # Минимум
+        Data = [] #Список всех чисел
 
-        for i in range(self.Table_input.rowCount()):
-            if self.Table_input.item(i, 0) is not None:
-                try:
-                    Data.append(float(self.Table_input.item(i, 0).text()))
-                    summ = float(self.Table_input.item(i, 0).text()) + summ
+        for i in range(self.Table_input.rowCount()): # Цикл для заполнения списка и выщитывания значений summ и average
+            if self.Table_input.item(i, 0) is not None: # условние если ячейка не пустая, то...
+                try: # Игнорирование исключений, связанных с некорректным вводом данных
+                    Data.append(float(self.Table_input.item(i, 0).text())) # Добавление в список текущего числа
+                    summ = float(self.Table_input.item(i, 0).text()) + summ # Прибавление к сумме текущего числа
                     average += 1
-                    if maxX < float(self.Table_input.item(i, 0).text()):
+                    if maxX < float(self.Table_input.item(i, 0).text()): # поиск максимума
                         maxX = float(self.Table_input.item(i, 0).text())
-                    if minX > float(self.Table_input.item(i, 0).text()):
+                    if minX > float(self.Table_input.item(i, 0).text()): # поиск минимума
                         minX = float(self.Table_input.item(i, 0).text())
 
-                except:
-                    pass
+                except:# Игнорирование исключений, связанных с некорректным вводом данных
+                    pass# Игнорирование исключений, связанных с некорректным вводом данных
 
-        if average != 0:
-            kol_interval = 7  # int(1 + abs(log(average, 2)))
-            sr_snaz = summ / len(Data)
+        if average != 0: # Условие если кол-во чисел не равно 0, то...
+            kol_interval = 7  # int(1 + abs(log(average, 2))) # В комментарии формула для динамического изменения кол-ва интервала, фиксированный интервал = 7
+            sr_snaz = summ / len(Data) # Ширина значений
 
-            deviations = [(x - sr_snaz) ** 2 for x in Data]
+            deviations = [(x - sr_snaz) ** 2 for x in Data] # спсок
 
-            variance = sum(deviations) / len(Data)
-            sred_kvad_otkl = math.sqrt(variance)
-            koev_variazii = sred_kvad_otkl / sr_snaz
+            variance = sum(deviations) / len(Data) # Дисперсия
+            sred_kvad_otkl = math.sqrt(variance) # квадрат дисперции
+            koev_variazii = sred_kvad_otkl / sr_snaz # Коэф. вариации
 
-            shir_interval = (maxX - minX) / kol_interval
-            interval = [[0] * 3 for i in range(kol_interval)]
-            interval[0][0] = minX
-            interval[0][1] = (interval[0][0] + shir_interval)
-            numbers_in_interval = 0
+            shir_interval = (maxX - minX) / kol_interval # Ширина интервала
+            interval = [[0] * 3 for i in range(kol_interval)] # инициализация списка для интервала
+            interval[0][0] = minX # начало первого интервала
+            interval[0][1] = (interval[0][0] + shir_interval) # Конец первого интервала
+            numbers_in_interval = 0 # номер интервала
 
-            for i in range(1, kol_interval):
-                interval[i][0] = interval[i - 1][1]
-                interval[i][1] = (interval[i][0] + shir_interval)
+            for i in range(1, kol_interval): # цикл присвоения интервалов списку
+                interval[i][0] = interval[i - 1][1] # начальное число интервала
+                interval[i][1] = (interval[i][0] + shir_interval) # конечное число интервала
 
-            for b in range(kol_interval):
-                for i in range(self.Table_input.rowCount()):
-                    try:
-                        if interval[b][0] <= float(self.Table_input.item(i, 0).text()) <= round(interval[b][1], 10):
-                            numbers_in_interval += 1
-                    except:
-                        pass
-                interval[b][2] = numbers_in_interval
-                numbers_in_interval = 0
+            for b in range(kol_interval): # Циклы для проверки входит ли число в интервал, если входит, то numbers_in_interval + 1
+                for i in range(self.Table_input.rowCount()): # цикл выбора всех значений в таблице ввода
+                    try: # Игнорирование исключений
+                        if interval[b][0] <= float(self.Table_input.item(i, 0).text()) <= round(interval[b][1], 10): # условие воходит ли в интервал
+                            numbers_in_interval += 1 # Кол-во чисел в интервале + 1
+                    except:# Игнорирование исключений
+                        pass# Игнорирование исключений
+                interval[b][2] = numbers_in_interval # Присвоение списку кол-ва входящих в данный интервал чисел
+                numbers_in_interval = 0 # обнуление переменной
 
-            Pi = [1 * 1 for i in range(kol_interval)]
+            Pi = [1 * 1 for i in range(kol_interval)] # инициализация списка для P[i]
 
-            for i in range(kol_interval):
-                Pi[i] = float((1 / len(Data)) * interval[i][2])
+            for i in range(kol_interval): # цикл для поиска p[i]
+                Pi[i] = float((1 / len(Data)) * interval[i][2]) # Поиск p[i] в интервале
 
-            self.date_set(kol_interval, interval, Pi)
-            self.date_statistic_set(variance, sred_kvad_otkl, sr_snaz, koev_variazii, maxX, minX)
+            self.date_set(kol_interval, interval, Pi) # вызов функции data_set для вставки в таблицу интервалов
+            self.date_statistic_set(variance, sred_kvad_otkl, sr_snaz, koev_variazii, maxX, minX) # вызов функции date_statistic_set для вставки в таблицу статистики
 
 
 app = QtWidgets.QApplication([])
