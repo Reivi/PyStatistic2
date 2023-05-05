@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1124</width>
-    <height>873</height>
+    <width>1537</width>
+    <height>962</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,12 +20,34 @@
       <item>
        <layout class="QVBoxLayout" name="verticalLayout">
         <property name="rightMargin">
-         <number>50</number>
+         <number>10</number>
         </property>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout">
           <item>
+           <widget class="QLabel" name="label">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Строки:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QSpinBox" name="Spin_input_table">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="contextMenuPolicy">
+             <enum>Qt::NoContextMenu</enum>
+            </property>
             <property name="minimum">
              <number>20</number>
             </property>
@@ -38,6 +60,61 @@
            <widget class="QPushButton" name="Obr_button">
             <property name="text">
              <string>Обработка</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_5">
+          <item>
+           <widget class="QLabel" name="label_2">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>55</width>
+              <height>99999</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Столбцы:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="SpinBox_Column">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>99999</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="contextMenuPolicy">
+             <enum>Qt::NoContextMenu</enum>
+            </property>
+            <property name="minimum">
+             <number>1</number>
+            </property>
+            <property name="maximum">
+             <number>10</number>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton_Krit">
+            <property name="text">
+             <string>PushButton</string>
             </property>
            </widget>
           </item>
@@ -73,6 +150,12 @@
           <property name="enabled">
            <bool>true</bool>
           </property>
+          <property name="minimumSize">
+           <size>
+            <width>500</width>
+            <height>0</height>
+           </size>
+          </property>
           <property name="editTriggers">
            <set>QAbstractItemView::AnyKeyPressed|QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed|QAbstractItemView::SelectedClicked</set>
           </property>
@@ -85,6 +168,24 @@
           <property name="defaultDropAction">
            <enum>Qt::IgnoreAction</enum>
           </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTableWidget" name="Krit_table">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>90</height>
+           </size>
+          </property>
+          <property name="rowCount">
+           <number>1</number>
+          </property>
+          <property name="columnCount">
+           <number>1</number>
+          </property>
+          <row/>
+          <column/>
          </widget>
         </item>
        </layout>
@@ -101,7 +202,7 @@
           </property>
           <property name="maximumSize">
            <size>
-            <width>400</width>
+            <width>350</width>
             <height>275</height>
            </size>
           </property>
@@ -123,7 +224,7 @@
           </property>
           <property name="minimumSize">
            <size>
-            <width>260</width>
+            <width>350</width>
             <height>0</height>
            </size>
           </property>
@@ -183,7 +284,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1124</width>
+     <width>1537</width>
      <height>25</height>
     </rect>
    </property>

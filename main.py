@@ -25,6 +25,7 @@ class ExampleApp(QtWidgets.QMainWindow, loadUi.Ui_MainWindow): # Класс в �
         self.setWindowTitle("PyStatistic") # Название она приложения
 
         self.Spin_input_table.valueChanged.connect(self.change) # Соединение spin с функцией для изменения кол-ва строк в таблице
+        self.SpinBox_Column.valueChanged.connect(self.change)
 
         self.Table_result.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Fixed) # Фиксированный размер ячеек в таюлице результатов
         self.Table_result.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Fixed)# Фиксированный размер ячеек
@@ -260,6 +261,8 @@ class ExampleApp(QtWidgets.QMainWindow, loadUi.Ui_MainWindow): # Класс в �
 
     def change(self): # Функция для динамического изменения кол-ва строк с таблице ввода с помощью spin
         self.Table_input.setRowCount(int(self.Spin_input_table.text()))
+        self.Table_input.setColumnCount(int(self.SpinBox_Column.text()))
+        self.Krit_table.setColumnCount(int(self.SpinBox_Column.text()))
 
     def get_data(self): # Функция для получения данных с таблицы ввода с дальнейшей их обработкой
 
