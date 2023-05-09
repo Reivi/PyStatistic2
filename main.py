@@ -25,7 +25,6 @@ class ExampleApp(QtWidgets.QMainWindow, loadUi.Ui_MainWindow): # Класс в �
         self.setWindowTitle("PyStatistic") # Название она приложения
 
         self.Spin_input_table.valueChanged.connect(self.change) # Соединение spin с функцией для изменения кол-ва строк в таблице
-        self.SpinBox_Column.valueChanged.connect(self.change)
 
         self.Table_result.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Fixed) # Фиксированный размер ячеек в таюлице результатов
         self.Table_result.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Fixed)# Фиксированный размер ячеек
@@ -39,7 +38,6 @@ class ExampleApp(QtWidgets.QMainWindow, loadUi.Ui_MainWindow): # Класс в �
         self.Table_statistic.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Fixed) # Фиксированный размер ячеек
         self.Table_statistic.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Fixed) # Фиксированный размер ячеек
 
-        self.Obr_button.clicked.connect(self.get_data) # Соединение кнопки с функцией get_data
 
         self.window = pg.plot() # Создание графика 1
         self.Widget_Layout.addWidget(self.window) # Добавление графика в окно приложения
@@ -53,11 +51,18 @@ class ExampleApp(QtWidgets.QMainWindow, loadUi.Ui_MainWindow): # Класс в �
         self.window_Pi.showGrid(y=True)# Линии сетки для графика
         self.window_Pi.setMouseEnabled(x=False, y=False)# Отключение, для графика, перемещения с помощь мыши
 
+        self.Obr_button.clicked.connect(self.get_data)  # Соединение кнопки с функцией get_data
+        self.clear_Button.clicked.connect(self.clear)
         self.action_Excel.triggered.connect(self.Export_to_Excel) # Соединение кнопки экспорта с функцией Export_to_Excel
 
 
         self.Name_graf.setPlaceholderText('Название проекта') # Подсказка для окна ввода
+        self.Number_value.setPlaceholderText('Главное число')
 
+
+    def clear(self):
+        for i in range(self.Table_input.rowCount()):
+            self.Table_input.setItem(i,0, QTableWidgetItem(None))
     def plot(self, axisX, axisY,Pi): # Функция для заполнения графиков
         self.window.clear() # очистка графика 1
         self.window.setLabel('left', 'Количество') # левая подпись графика 1
@@ -93,6 +98,11 @@ class ExampleApp(QtWidgets.QMainWindow, loadUi.Ui_MainWindow): # Класс в �
         bold_font = Font(bold=True)
         c1.alignment = Alignment(horizontal='center')
         c1.font = bold_font
+        c1 = my_sheet.cell(row=1, column=3)
+        c1.value = "Измененные данные"
+        bold_font = Font(bold=True)
+        c1.alignment = Alignment(horizontal='center')
+        c1.font = bold_font
         error_dialog = QtWidgets.QErrorMessage()
         try:
             for i in range(self.Table_input.rowCount()):
@@ -102,60 +112,67 @@ class ExampleApp(QtWidgets.QMainWindow, loadUi.Ui_MainWindow): # Класс в �
                 c1 = my_sheet.cell(row=i + 2, column=1)
                 c1.value = i + 1
                 c1.alignment = Alignment(horizontal='center')
+                if self.Number_value.text() != "":
+                    c1 = my_sheet.cell(row=i + 2, column=3)
+                    c1.value = float(self.Table_input.item(i, 1).text())
+                    c1.alignment = Alignment(horizontal='center')
+                    c1 = my_sheet.cell(row=i + 2, column=2)
+                    c1.value = i + 1
+                    c1.alignment = Alignment(horizontal='center')
         except:
             pass
-        c1 = my_sheet.cell(row=1, column=4)
+        c1 = my_sheet.cell(row=1, column=5)
         c1.value = "Интервал"
         c1.font = bold_font
-        c1 = my_sheet.cell(row=1, column=5)
+        c1 = my_sheet.cell(row=1, column=6)
         c1.value = "Количество"
         c1.font = bold_font
-        c1 = my_sheet.cell(row=1, column=6)
+        c1 = my_sheet.cell(row=1, column=7)
         c1.value = "Pi"
         c1.font = bold_font
         c1.alignment = Alignment(horizontal='center')
 
         for i in range(7):
-            c1 = my_sheet.cell(row=i + 2, column=4)
+            c1 = my_sheet.cell(row=i + 2, column=5)
             try:
                 c1.value = self.Table_result.item(i, 0).text()
             except:
                 error_dialog.showMessage('Данные не обработаны!')
             c1.alignment = Alignment(horizontal='center')
-            c1 = my_sheet.cell(row=i + 2, column=5)
+            c1 = my_sheet.cell(row=i + 2, column=6)
             c1.value = float(self.Table_result.item(i, 1).text())
             c1.alignment = Alignment(horizontal='center')
-            c1 = my_sheet.cell(row=i + 2, column=6)
+            c1 = my_sheet.cell(row=i + 2, column=7)
             c1.value = float(self.Table_result.item(i, 2).text())
             c1.alignment = Alignment(horizontal='center')
 
-        c1 = my_sheet.cell(row=1, column=9)
+        c1 = my_sheet.cell(row=1, column=10)
         c1.value = "Параметр"
         c1.font = bold_font
-        c1 = my_sheet.cell(row=1, column=8)
+        c1 = my_sheet.cell(row=1, column=9)
         c1.value = "Название"
         c1.font = bold_font
-        c1 = my_sheet.cell(row=2, column=8)
+        c1 = my_sheet.cell(row=2, column=9)
         c1.value = "Дисперсия"
         c1.font = bold_font
-        c1 = my_sheet.cell(row=3, column=8)
+        c1 = my_sheet.cell(row=3, column=9)
         c1.value = "Сред. квад. окл."
         c1.font = bold_font
-        c1 = my_sheet.cell(row=4, column=8)
+        c1 = my_sheet.cell(row=4, column=9)
         c1.value = "Среднее знач."
         c1.font = bold_font
-        c1 = my_sheet.cell(row=5, column=8)
+        c1 = my_sheet.cell(row=5, column=9)
         c1.value = "Коэф. вариац."
         c1.font = bold_font
-        c1 = my_sheet.cell(row=6, column=8)
+        c1 = my_sheet.cell(row=6, column=9)
         c1.value = "Мин."
         c1.font = bold_font
-        c1 = my_sheet.cell(row=7, column=8)
+        c1 = my_sheet.cell(row=7, column=9)
         c1.value = "Макс."
         c1.font = bold_font
 
         for i in range(6):
-            c1 = my_sheet.cell(row=i + 2, column=9)
+            c1 = my_sheet.cell(row=i + 2, column=10)
             c1.value = self.Table_statistic.item(i, 1).text()
             c1.alignment = Alignment(horizontal='center')
 
@@ -173,14 +190,14 @@ class ExampleApp(QtWidgets.QMainWindow, loadUi.Ui_MainWindow): # Класс в �
         chart1.height = 11
         chart1.title = self.Name_graf.text()
         # выберем 2 столбца с данными для оси `y`
-        data = Reference(my_sheet, min_col=5, max_col=5, min_row=1, max_row=8)
+        data = Reference(my_sheet, min_col=6, max_col=6, min_row=1, max_row=8)
         # теперь выберем категорию для оси `x`
-        categor = Reference(my_sheet, min_col=4, max_col=4, min_row=2, max_row=8)
+        categor = Reference(my_sheet, min_col=5, max_col=5, min_row=2, max_row=8)
         # добавляем данные в объект диаграммы
         chart1.add_data(data, titles_from_data=True)
         # установим метки на объект диаграммы
         chart1.set_categories(categor)
-        my_sheet.add_chart(chart1, "K2")
+        my_sheet.add_chart(chart1, "L2")
 
         chart2 = BarChart()
         # установим тип - `вертикальные столбцы`
@@ -196,14 +213,14 @@ class ExampleApp(QtWidgets.QMainWindow, loadUi.Ui_MainWindow): # Класс в �
         chart2.height = 11
         chart2.title = self.Name_graf.text()
         # выберем 2 столбца с данными для оси `y`
-        data = Reference(my_sheet, min_col=6, max_col=6, min_row=1, max_row=8)
+        data = Reference(my_sheet, min_col=7, max_col=7, min_row=1, max_row=8)
         # теперь выберем категорию для оси `x`
-        categor = Reference(my_sheet, min_col=4, max_col=4, min_row=2, max_row=8)
+        categor = Reference(my_sheet, min_col=5, max_col=5, min_row=2, max_row=8)
         # добавляем данные в объект диаграммы
         chart2.add_data(data, titles_from_data=True)
         # установим метки на объект диаграммы
         chart2.set_categories(categor)
-        my_sheet.add_chart(chart2, "K24")
+        my_sheet.add_chart(chart2, "L24")
 
         if self.Name_graf.text() != "": # Сохранение файла в форамате xlsx
             save_name = self.Name_graf.text() + ".xlsx"
@@ -261,8 +278,6 @@ class ExampleApp(QtWidgets.QMainWindow, loadUi.Ui_MainWindow): # Класс в �
 
     def change(self): # Функция для динамического изменения кол-ва строк с таблице ввода с помощью spin
         self.Table_input.setRowCount(int(self.Spin_input_table.text()))
-        self.Table_input.setColumnCount(int(self.SpinBox_Column.text()))
-        self.Krit_table.setColumnCount(int(self.SpinBox_Column.text()))
 
     def get_data(self): # Функция для получения данных с таблицы ввода с дальнейшей их обработкой
 
@@ -272,16 +287,28 @@ class ExampleApp(QtWidgets.QMainWindow, loadUi.Ui_MainWindow): # Класс в �
         minX = sys.maxsize # Минимум
         Data = [] #Список всех чисел
 
+        if self.Number_value.text() =="":
+            column_number = 0
+            self.Table_input.setColumnCount(1)
+        else:
+            self.Table_input.setColumnCount(2)
+            column_number = 1
+            for i in range(self.Table_input.rowCount()):
+                try:
+                    self.Table_input.setItem(i, 1, QTableWidgetItem(str(float(self.Number_value.text()) - float(self.Table_input.item(i, 0).text()))))
+                except:
+                    pass
+
         for i in range(self.Table_input.rowCount()): # Цикл для заполнения списка и выщитывания значений summ и average
-            if self.Table_input.item(i, 0) is not None: # условние если ячейка не пустая, то...
+            if self.Table_input.item(i, column_number) is not None: # условние если ячейка не пустая, то...
                 try: # Игнорирование исключений, связанных с некорректным вводом данных
-                    Data.append(float(self.Table_input.item(i, 0).text())) # Добавление в список текущего числа
-                    summ = float(self.Table_input.item(i, 0).text()) + summ # Прибавление к сумме текущего числа
+                    Data.append(float(self.Table_input.item(i, column_number).text())) # Добавление в список текущего числа
+                    summ = float(self.Table_input.item(i, column_number).text()) + summ # Прибавление к сумме текущего числа
                     average += 1
-                    if maxX < float(self.Table_input.item(i, 0).text()): # поиск максимума
-                        maxX = float(self.Table_input.item(i, 0).text())
-                    if minX > float(self.Table_input.item(i, 0).text()): # поиск минимума
-                        minX = float(self.Table_input.item(i, 0).text())
+                    if maxX < float(self.Table_input.item(i, column_number).text()): # поиск максимума
+                        maxX = float(self.Table_input.item(i, column_number).text())
+                    if minX > float(self.Table_input.item(i, column_number).text()): # поиск минимума
+                        minX = float(self.Table_input.item(i, column_number).text())
 
                 except:# Игнорирование исключений, связанных с некорректным вводом данных
                     pass# Игнорирование исключений, связанных с некорректным вводом данных
@@ -309,7 +336,7 @@ class ExampleApp(QtWidgets.QMainWindow, loadUi.Ui_MainWindow): # Класс в �
             for b in range(kol_interval): # Циклы для проверки входит ли число в интервал, если входит, то numbers_in_interval + 1
                 for i in range(self.Table_input.rowCount()): # цикл выбора всех значений в таблице ввода
                     try: # Игнорирование исключений
-                        if interval[b][0] <= float(self.Table_input.item(i, 0).text()) <= round(interval[b][1], 10): # условие воходит ли в интервал
+                        if interval[b][0] <= float(self.Table_input.item(i, column_number).text()) <= round(interval[b][1], 10): # условие воходит ли в интервал
                             numbers_in_interval += 1 # Кол-во чисел в интервале + 1
                     except:# Игнорирование исключений
                         pass# Игнорирование исключений

@@ -57,64 +57,26 @@
            </widget>
           </item>
           <item>
+           <widget class="QLineEdit" name="Number_value">
+            <property name="maximumSize">
+             <size>
+              <width>150</width>
+              <height>16777215</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QPushButton" name="Obr_button">
             <property name="text">
              <string>Обработка</string>
             </property>
            </widget>
           </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_5">
           <item>
-           <widget class="QLabel" name="label_2">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>55</width>
-              <height>99999</height>
-             </size>
-            </property>
+           <widget class="QPushButton" name="clear_Button">
             <property name="text">
-             <string>Столбцы:</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QSpinBox" name="SpinBox_Column">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>99999</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="contextMenuPolicy">
-             <enum>Qt::NoContextMenu</enum>
-            </property>
-            <property name="minimum">
-             <number>1</number>
-            </property>
-            <property name="maximum">
-             <number>10</number>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="pushButton_Krit">
-            <property name="text">
-             <string>PushButton</string>
+             <string>Очистить</string>
             </property>
            </widget>
           </item>
@@ -168,24 +130,6 @@
           <property name="defaultDropAction">
            <enum>Qt::IgnoreAction</enum>
           </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QTableWidget" name="Krit_table">
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>90</height>
-           </size>
-          </property>
-          <property name="rowCount">
-           <number>1</number>
-          </property>
-          <property name="columnCount">
-           <number>1</number>
-          </property>
-          <row/>
-          <column/>
          </widget>
         </item>
        </layout>
