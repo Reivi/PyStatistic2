@@ -5,9 +5,9 @@ import openpyxl
 from openpyxl.chart import Reference, BarChart
 from openpyxl.styles import Font, Alignment
 
-
+from PyQt5.QtGui import QDoubleValidator
 import pyqtgraph as pg
-
+from PyQt5 import QtCore
 
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QTableWidgetItem, QHeaderView, QFileDialog
@@ -58,6 +58,10 @@ class ExampleApp(QtWidgets.QMainWindow, loadUi.Ui_MainWindow): # Класс в �
 
         self.Name_graf.setPlaceholderText('Название проекта') # Подсказка для окна ввода
         self.Number_value.setPlaceholderText('Главное число')
+
+        validator = QDoubleValidator(0.0, 1.0, 4)
+        validator.setLocale(QtCore.QLocale("en_US"))
+        self.Number_value.setValidator(validator)
 
 
     def clear(self):
@@ -295,8 +299,10 @@ class ExampleApp(QtWidgets.QMainWindow, loadUi.Ui_MainWindow): # Класс в �
             column_number = 1
             for i in range(self.Table_input.rowCount()):
                 self.Table_input.setItem(i, 1, QTableWidgetItem(None))
+
                 try:
-                    self.Table_input.setItem(i, 1, QTableWidgetItem(str(float(self.Number_value.text()) - float(self.Table_input.item(i, 0).text()))))
+                    val = float(self.Number_value.text()) - float(self.Table_input.item(i, 0).text())
+                    self.Table_input.setItem(i, 1, QTableWidgetItem(str(round(val, 4))))
                 except:
                     pass
 
