@@ -294,6 +294,7 @@ class ExampleApp(QtWidgets.QMainWindow, loadUi.Ui_MainWindow): # Класс в �
             self.Table_input.setColumnCount(2)
             column_number = 1
             for i in range(self.Table_input.rowCount()):
+                self.Table_input.setItem(i, 1, QTableWidgetItem(None))
                 try:
                     self.Table_input.setItem(i, 1, QTableWidgetItem(str(float(self.Number_value.text()) - float(self.Table_input.item(i, 0).text()))))
                 except:
